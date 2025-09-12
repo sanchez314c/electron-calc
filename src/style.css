@@ -1,0 +1,318 @@
+/* CSS Variables for Calculator Dark Theme */
+:root {
+    --bg-primary: #000000;
+    --bg-secondary: #1c1c1e;
+    --bg-tertiary: #2c2c2e;
+    --bg-display: #0a0a0a;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #e5e5e7;
+    --text-display: #ffffff;
+    
+    --btn-number: #333333;
+    --btn-number-hover: #404040;
+    --btn-number-active: #555555;
+    
+    --btn-operator: #ff9500;
+    --btn-operator-hover: #ffb143;
+    --btn-operator-active: #cc7700;
+    
+    --btn-function: #a6a6a6;
+    --btn-function-hover: #b8b8b8;
+    --btn-function-active: #8e8e8e;
+    
+    --btn-equals: #ff9500;
+    --btn-equals-hover: #ffb143;
+    --btn-equals-active: #cc7700;
+    
+    --btn-memory: #666666;
+    --btn-memory-hover: #777777;
+    --btn-memory-active: #555555;
+    
+    --border-color: #3a3a3c;
+    --shadow: rgba(0, 0, 0, 0.5);
+    
+    --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+    
+    --radius: 10px;
+    --spacing: 4px;
+}
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: var(--font-family);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Calculator Container */
+.calculator-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    background-color: var(--bg-primary);
+    padding: 8px;
+    gap: var(--spacing);
+}
+
+/* Display Section */
+.display-section {
+    flex: 0 0 auto;
+    background-color: var(--bg-display);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.display {
+    text-align: right;
+    word-break: break-all;
+}
+
+.display-previous {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--text-secondary);
+    min-height: 18px;
+    opacity: 0.7;
+    margin-bottom: 4px;
+}
+
+.display-current {
+    font-family: var(--font-mono);
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--text-display);
+    min-height: 44px;
+    line-height: 1.2;
+}
+
+/* Button Grid */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing);
+    flex: 1;
+    margin-bottom: 8px;
+}
+
+/* Base Button Styles */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-family);
+    font-size: 20px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    min-height: 64px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+/* Number Buttons */
+.btn-number {
+    background-color: var(--btn-number);
+    color: var(--text-primary);
+}
+
+.btn-number:hover {
+    background-color: var(--btn-number-hover);
+}
+
+.btn-number:active {
+    background-color: var(--btn-number-active);
+}
+
+/* Operator Buttons */
+.btn-operator {
+    background-color: var(--btn-operator);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.btn-operator:hover {
+    background-color: var(--btn-operator-hover);
+}
+
+.btn-operator:active {
+    background-color: var(--btn-operator-active);
+}
+
+.btn-operator.selected {
+    background-color: var(--text-primary);
+    color: var(--btn-operator);
+}
+
+/* Function Buttons */
+.btn-function {
+    background-color: var(--btn-function);
+    color: var(--bg-primary);
+    font-weight: 500;
+}
+
+.btn-function:hover {
+    background-color: var(--btn-function-hover);
+}
+
+.btn-function:active {
+    background-color: var(--btn-function-active);
+}
+
+/* Equals Button */
+.btn-equals {
+    background-color: var(--btn-equals);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 24px;
+}
+
+.btn-equals:hover {
+    background-color: var(--btn-equals-hover);
+}
+
+.btn-equals:active {
+    background-color: var(--btn-equals-active);
+}
+
+/* Memory Section */
+.memory-section {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing);
+    margin-top: auto;
+}
+
+.btn-memory {
+    background-color: var(--btn-memory);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 32px;
+    border-radius: 6px;
+}
+
+.btn-memory:hover {
+    background-color: var(--btn-memory-hover);
+}
+
+.btn-memory:active {
+    background-color: var(--btn-memory-active);
+}
+
+/* Special Button Styles */
+.btn[data-number="0"] {
+    grid-column: 1;
+}
+
+/* Keyboard Support */
+.btn:focus-visible {
+    outline: 2px solid var(--btn-operator);
+    outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes buttonPress {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.btn.pressed {
+    animation: buttonPress 0.1s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 400px) {
+    .calculator-container {
+        padding: 4px;
+        gap: 2px;
+    }
+    
+    .button-grid {
+        gap: 2px;
+    }
+    
+    .memory-section {
+        gap: 2px;
+    }
+    
+    .btn {
+        min-height: 56px;
+        font-size: 18px;
+    }
+    
+    .display-current {
+        font-size: 32px;
+    }
+}
+
+@media (max-height: 600px) {
+    .btn {
+        min-height: 48px;
+        font-size: 18px;
+    }
+    
+    .display-current {
+        font-size: 28px;
+    }
+    
+    .display-section {
+        padding: 16px 12px;
+    }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #000000;
+        --bg-secondary: #1c1c1e;
+        --bg-display: #0a0a0a;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .btn {
+        border: 1px solid var(--border-color);
+    }
+    
+    .display-section {
+        border: 2px solid var(--border-color);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .btn {
+        transition: none;
+    }
+    
+    .btn:active {
+        transform: none;
+    }
+    
+    .btn.pressed {
+        animation: none;
+    }
+}

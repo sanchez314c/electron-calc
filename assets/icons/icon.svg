@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="displayGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d2d2d;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="1024" height="1024" rx="192" ry="192" fill="url(#bgGradient)" filter="url(#shadow)"/>
+  
+  <!-- Calculator body -->
+  <rect x="128" y="128" width="768" height="768" rx="96" ry="96" fill="rgba(45, 45, 45, 0.95)" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2"/>
+  
+  <!-- Display screen -->
+  <rect x="192" y="192" width="640" height="192" rx="32" ry="32" fill="url(#displayGradient)" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2"/>
+  
+  <!-- Display text -->
+  <text x="800" y="320" font-family="SF Pro Display, -apple-system, sans-serif" font-size="96" font-weight="300" fill="#ffffff" text-anchor="end">123</text>
+  
+  <!-- Button grid -->
+  <!-- Top row -->
+  <rect x="192" y="448" width="128" height="96" rx="24" ry="24" fill="rgba(255, 152, 0, 0.9)"/>
+  <text x="256" y="508" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="600" fill="#ffffff" text-anchor="middle">C</text>
+  
+  <rect x="352" y="448" width="128" height="96" rx="24" ry="24" fill="rgba(255, 152, 0, 0.9)"/>
+  <text x="416" y="508" font-family="SF Pro Display, -apple-system, sans-serif" font-size="40" font-weight="600" fill="#ffffff" text-anchor="middle">CE</text>
+  
+  <rect x="512" y="448" width="128" height="96" rx="24" ry="24" fill="rgba(255, 107, 107, 0.9)"/>
+  <text x="576" y="516" font-family="SF Pro Display, -apple-system, sans-serif" font-size="56" font-weight="500" fill="#ffffff" text-anchor="middle">⌫</text>
+  
+  <rect x="672" y="448" width="128" height="96" rx="24" ry="24" fill="rgba(255, 107, 107, 0.9)"/>
+  <text x="736" y="516" font-family="SF Pro Display, -apple-system, sans-serif" font-size="56" font-weight="500" fill="#ffffff" text-anchor="middle">÷</text>
+  
+  <!-- Second row -->
+  <rect x="192" y="576" width="128" height="96" rx="24" ry="24" fill="rgba(255, 255, 255, 0.15)"/>
+  <text x="256" y="636" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="500" fill="#ffffff" text-anchor="middle">7</text>
+  
+  <rect x="352" y="576" width="128" height="96" rx="24" ry="24" fill="rgba(255, 255, 255, 0.15)"/>
+  <text x="416" y="636" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="500" fill="#ffffff" text-anchor="middle">8</text>
+  
+  <rect x="512" y="576" width="128" height="96" rx="24" ry="24" fill="rgba(255, 255, 255, 0.15)"/>
+  <text x="576" y="636" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="500" fill="#ffffff" text-anchor="middle">9</text>
+  
+  <rect x="672" y="576" width="128" height="96" rx="24" ry="24" fill="rgba(255, 107, 107, 0.9)"/>
+  <text x="736" y="636" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="500" fill="#ffffff" text-anchor="middle">×</text>
+  
+  <!-- Third row -->
+  <rect x="192" y="704" width="128" height="96" rx="24" ry="24" fill="rgba(255, 255, 255, 0.15)"/>
+  <text x="256" y="764" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="500" fill="#ffffff" text-anchor="middle">4</text>
+  
+  <rect x="352" y="704" width="128" height="96" rx="24" ry="24" fill="rgba(255, 255, 255, 0.15)"/>
+  <text x="416" y="764" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="500" fill="#ffffff" text-anchor="middle">5</text>
+  
+  <rect x="512" y="704" width="128" height="96" rx="24" ry="24" fill="rgba(255, 255, 255, 0.15)"/>
+  <text x="576" y="764" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="500" fill="#ffffff" text-anchor="middle">6</text>
+  
+  <rect x="672" y="704" width="128" height="224" rx="24" ry="24" fill="rgba(76, 175, 80, 0.9)"/>
+  <text x="736" y="828" font-family="SF Pro Display, -apple-system, sans-serif" font-size="56" font-weight="600" fill="#ffffff" text-anchor="middle">=</text>
+</svg>
