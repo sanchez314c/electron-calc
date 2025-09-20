@@ -31,8 +31,8 @@ class Calculator {
     setupCalculator() {
         try {
             // Get display elements
-            this.currentDisplay = document.getElementById('current-display');
-            this.previousDisplay = document.getElementById('previous-display');
+            this.currentDisplay = document.getElementById('current-operand');
+            this.previousDisplay = document.getElementById('previous-operand');
             
             // Setup event listeners
             this.setupEventListeners();
@@ -227,7 +227,7 @@ class Calculator {
             case 'decimal':
                 this.inputDecimal();
                 break;
-            case 'sign':
+            case 'negate':
                 this.toggleSign();
                 break;
             case 'equals':

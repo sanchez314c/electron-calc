@@ -2,7 +2,7 @@
   "name": "electron-calculator",
   "version": "1.0.0",
   "description": "A simple clean modern dark-mode Electron-based Calculator app for MacOS, Windows and Linux",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
@@ -13,7 +13,7 @@
     "build:all": "electron-builder --win --mac --linux",
     "pack": "electron-builder --dir",
     "postinstall": "electron-builder install-app-deps",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [
     "calculator",
@@ -23,7 +23,11 @@
     "desktop-app",
     "utilities"
   ],
-  "author": "SuperClaude",
+  "author": {
+    "name": "SuperClaude",
+    "email": "support@superclaude.ai"
+  },
+  "homepage": "https://superclaude.ai",
   "license": "MIT",
   "devDependencies": {
     "electron": "^27.0.0",
@@ -36,20 +40,25 @@
       "output": "dist"
     },
     "files": [
-      "main.js",
-      "index.html",
-      "style.css",
-      "script.js",
+      "src/main.js",
+      "src/index.html",
+      "src/style.css",
+      "src/renderer.js",
+      "src/preload.js",
+      "assets/**/*",
       "package.json"
     ],
     "mac": {
       "category": "public.app-category.utilities",
+      "icon": "resources/icons/icon.icns",
       "target": [
         {
           "target": "dmg",
           "arch": ["x64", "arm64"]
         }
-      ]
+      ],
+      "identity": null,
+      "hardenedRuntime": false
     },
     "win": {
       "target": [
@@ -61,6 +70,7 @@
     },
     "linux": {
       "category": "Utility",
+      "maintainer": "SuperClaude <support@superclaude.ai>",
       "target": [
         {
           "target": "AppImage",

@@ -15,7 +15,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      enableRemoteModule: false
+      enableRemoteModule: false,
+      preload: path.join(__dirname, 'preload.js')
     },
     titleBarStyle: 'default',
     title: 'Calculator',
@@ -24,7 +25,7 @@ function createWindow() {
   });
 
   // Load the index.html file
-  mainWindow.loadFile('index.html');
+  mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Show window when ready to prevent visual flash
   mainWindow.once('ready-to-show', () => {
@@ -61,7 +62,7 @@ function setupMenu() {
           accelerator: 'CmdOrCtrl+Delete',
           click: () => {
             if (mainWindow) {
-              mainWindow.webContents.send('clear-calculator');
+              mainWindow.webContents.send('menu-clear');
             }
           }
         },

@@ -25,11 +25,23 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeListener('menu-new-file', callback);
   },
   
-  onMenuOpenFile: (callback) => {
-    ipcRenderer.on('menu-open-file', callback);
-    // Return cleanup function
-    return () => ipcRenderer.removeListener('menu-open-file', callback);
-  },
+   onMenuOpenFile: (callback) => {
+     ipcRenderer.on('menu-open-file', callback);
+     // Return cleanup function
+     return () => ipcRenderer.removeListener('menu-open-file', callback);
+   },
+
+   onMenuClear: (callback) => {
+     ipcRenderer.on('menu-clear', callback);
+     // Return cleanup function
+     return () => ipcRenderer.removeListener('menu-clear', callback);
+   },
+
+   onMenuClearEntry: (callback) => {
+     ipcRenderer.on('menu-clear-entry', callback);
+     // Return cleanup function
+     return () => ipcRenderer.removeListener('menu-clear-entry', callback);
+   },
   
   // Utility methods
   platform: process.platform,
