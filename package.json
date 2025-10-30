@@ -2,7 +2,7 @@
   "name": "electron-calculator",
   "version": "1.0.0",
   "description": "A simple clean modern dark-mode Electron-based Calculator app for MacOS, Windows and Linux",
-  "main": "src/main.js",
+  "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
@@ -11,9 +11,23 @@
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux",
     "build:all": "electron-builder --win --mac --linux",
+    "build:maximum": "./scripts/build-compile-dist.sh --platforms all --architectures all",
+    "build:clean": "./scripts/build-compile-dist.sh --skip-cleanup --skip-bloat-check",
     "pack": "electron-builder --dir",
     "postinstall": "electron-builder install-app-deps",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "bloat-check": "./scripts/bloat-check.sh",
+    "lint": "eslint src --ext .js,.jsx",
+    "format": "prettier --write src/**/*.{js,jsx,json,css,md}",
+    "clean": "rm -rf dist build out release",
+    "temp-clean": "find . -name '*.tmp' -type f -delete && find . -name '*.temp' -type f -delete",
+    "deps:install": "npm ci --prefer-offline --no-audit",
+    "deps:update": "npm update",
+    "deps:audit": "npm audit --audit-level=moderate",
+    "prepare-release": "npm run clean && npm run deps:install && npm run test && npm run build:maximum",
+    "format:check": "prettier --check src/**/*.{js,jsx,json,css,md}"
   },
   "keywords": [
     "calculator",
@@ -30,23 +44,33 @@
   "homepage": "https://superclaude.ai",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^27.0.0",
-    "electron-builder": "^24.6.4"
+    "@jest/globals": "^29.7.0",
+    "electron": "^28.3.3",
+    "electron-builder": "^24.6.4",
+    "jest": "^29.7.0",
+    "jsdom": "^22.1.0"
   },
   "build": {
     "appId": "com.claude.calculator",
     "productName": "Calculator",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build-resources"
     },
     "files": [
-      "src/main.js",
-      "src/index.html",
-      "src/style.css",
-      "src/renderer.js",
-      "src/preload.js",
+      "src/main/index.js",
+      "src/renderer/index.html",
+      "src/renderer/styles/style.css",
+      "src/renderer/utils/renderer.js",
+      "src/preload/index.js",
       "assets/**/*",
       "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/",
+        "to": "resources/"
+      }
     ],
     "mac": {
       "category": "public.app-category.utilities",
@@ -54,37 +78,178 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "pkg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "identity": null,
-      "hardenedRuntime": false
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "entitlements": "build-resources/entitlements.mac.plist",
+      "entitlementsInherit": "build-resources/entitlements.mac.plist"
     },
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
-      ]
+      ],
+      "icon": "resources/icons/icon.ico"
     },
     "linux": {
       "category": "Utility",
       "maintainer": "SuperClaude <support@superclaude.ai>",
+      "icon": "resources/icons/icon.png",
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64",
+            "arm64",
+            "ia32",
+            "armv7l"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64",
+            "arm64",
+            "ia32",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64",
+            "arm64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "snap",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64",
+            "arm64",
+            "ia32",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "pacman",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
-      ]
+      ],
+      "desktop": {
+        "Name": "Calculator",
+        "Comment": "A simple clean modern dark-mode calculator",
+        "Keywords": "calculator;math;utility;"
+      }
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "installerIcon": "resources/icons/icon.ico",
+      "uninstallerIcon": "resources/icons/icon.ico",
+      "installerHeaderIcon": "resources/icons/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Calculator"
+    },
+    "deb": {
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxss1",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libdrm2",
+        "libxcomposite1",
+        "libxdamage1",
+        "libxrandr2",
+        "libgbm1",
+        "libxkbcommon0",
+        "libasound2"
+      ]
+    },
+    "snap": {
+      "plugs": [
+        "default",
+        "desktop",
+        "desktop-legacy",
+        "home",
+        "x11",
+        "unity7",
+        "browser-support",
+        "network",
+        "gsettings",
+        "audio-playback",
+        "pulseaudio",
+        "opengl"
+      ]
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "superclaude",
+        "repo": "electron-calculator"
+      }
+    ],
+    "compression": "maximum"
   }
 }
