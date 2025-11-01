@@ -16,7 +16,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, '../preload/index.js')
     },
     titleBarStyle: 'default',
     title: 'Calculator',
@@ -25,17 +25,15 @@ function createWindow() {
   });
 
   // Load the index.html file
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
   // Show window when ready to prevent visual flash
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
 
-  // Open DevTools in development
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
+  // Open DevTools for debugging
+  mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed
   mainWindow.on('closed', () => {

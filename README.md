@@ -1,57 +1,32 @@
 # Electron Calculator
 
-<div align="center">
-
-![Calculator Icon](assets/icons/icon-256x256.png)
-
-# Modern Dark-Mode Calculator
-
-[![GitHub release](https://img.shields.io/github/release/superclaude/electron-calculator.svg)](https://github.com/superclaude/electron-calculator/releases)
+[![CI/CD Pipeline](https://github.com/superclaude/electron-calculator/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/superclaude/electron-calculator/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Electron Version](https://img.shields.io/badge/Electron-27.0.0-blue.svg)](https://electronjs.org/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/superclaude/electron-calculator/releases)
+[![npm version](https://badge.fury.io/js/electron-calculator.svg)](https://badge.fury.io/js/electron-calculator)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=superclaude_electron-calculator&metric=alert_status)](https://sonarcloud.io/dashboard?id=superclaude_electron-calculator)
 
-A clean, modern, and feature-rich calculator application built with Electron. Features a professional dark mode interface with comprehensive mathematical operations and cross-platform compatibility.
+A simple, clean, modern dark-mode Electron-based Calculator application for macOS, Windows, and Linux.
 
-[📥 Download Latest Release](https://github.com/superclaude/electron-calculator/releases/latest) • [📖 Documentation](docs/) • [🐛 Report Issues](https://github.com/superclaude/electron-calculator/issues)
+## 🚀 Features
 
-</div>
-
-## ✨ Features
-
-### Core Functionality
-- **Basic Operations**: Addition, subtraction, multiplication, division
-- **Advanced Operations**: Square root, percentages, memory functions
+- **Cross-platform**: Works on macOS, Windows, and Linux
+- **Modern Dark Mode**: Easy on the eyes with a sleek dark theme
+- **Clean Interface**: Minimalist design focused on functionality
 - **Keyboard Support**: Full keyboard navigation and shortcuts
-- **History Tracking**: Keep track of your calculations
-- **Error Handling**: Graceful error recovery and user feedback
+- **Lightweight**: Fast startup and minimal resource usage
 
-### User Experience
-- **Dark Mode**: Easy on the eyes, professional appearance
-- **Responsive Design**: Works great on different screen sizes
-- **Cross-Platform**: Windows, macOS, and Linux support
-- **Accessibility**: Screen reader support and keyboard navigation
-- **Performance**: Fast and responsive calculations
+## 📦 Installation
 
-### Developer Features
-- **Modern Architecture**: Clean, maintainable code structure
-- **Security First**: Follows Electron security best practices
-- **Testing**: Comprehensive test coverage
-- **CI/CD Ready**: Automated builds and releases
-- **Documentation**: Complete development documentation
+### Download Pre-built Binaries
 
-## 🚀 Quick Start
-
-### Installation
-
-#### Download Pre-built Binaries
-1. Visit the [Releases page](https://github.com/superclaude/electron-calculator/releases)
+1. Go to the [Releases](https://github.com/superclaude/electron-calculator/releases) page
 2. Download the appropriate package for your platform:
-   - **Windows**: `Calculator-Setup-x.x.x.exe`
-   - **macOS**: `Calculator-x.x.x.dmg`
-   - **Linux**: `Calculator-x.x.x.AppImage` or `Calculator-x.x.x.deb`
+   - **macOS**: `.dmg` file
+   - **Windows**: `.exe` installer or portable version
+   - **Linux**: `.AppImage`, `.deb`, or `.rpm` package
 
-#### Install from Source
+### Install from Source
+
 ```bash
 # Clone the repository
 git clone https://github.com/superclaude/electron-calculator.git
@@ -60,35 +35,16 @@ cd electron-calculator
 # Install dependencies
 npm install
 
-# Run in development mode
-npm run dev
-
-# Build for your platform
-npm run build
+# Run the application
+npm start
 ```
-
-### Basic Usage
-
-1. **Basic Calculations**: Use number keys and operation buttons
-2. **Keyboard Shortcuts**:
-   - Numbers: `0-9`
-   - Operations: `+`, `-`, `*`, `/`
-   - Equals: `Enter` or `=`
-   - Clear: `Escape` or `C`
-   - Decimal: `.`
-
-3. **Memory Functions**:
-   - Memory Store: `MS`
-   - Memory Recall: `MR`
-   - Memory Clear: `MC`
-   - Memory Add: `M+`
 
 ## 🛠️ Development
 
 ### Prerequisites
-- **Node.js** 16.0 or higher
-- **npm** 7.0 or higher
-- **Git**
+
+- Node.js 16+ 
+- npm 7+
 
 ### Development Setup
 
@@ -100,74 +56,23 @@ cd electron-calculator
 # Install dependencies
 npm install
 
-# Start development server
+# Start development mode with hot reload
 npm run dev
+
+# Run tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Lint code
+npm run lint
+
+# Format code
+npm run format
 ```
 
-### Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start the application |
-| `npm run dev` | Start in development mode with DevTools |
-| `npm test` | Run the test suite |
-| `npm run test:coverage` | Run tests with coverage report |
-| `npm run build` | Build for current platform |
-| `npm run build:all` | Build for all platforms |
-| `npm run build:maximum` | Comprehensive build with all platforms and architectures |
-| `npm run bloat-check` | Analyze dependency bloat |
-| `npm run clean` | Clean build artifacts |
-
-### Project Structure
-
-```
-electron-calculator/
-├── 📁 src/                     # Source code
-│   ├── main.js                 # Main Electron process
-│   ├── preload.js              # Security bridge
-│   ├── index.html              # UI structure
-│   ├── style.css               # Dark mode styles
-│   └── renderer.js             # UI logic and calculations
-├── 📁 assets/                  # Static assets
-│   └── icons/                  # Application icons
-├── 📁 scripts/                 # Build and utility scripts
-│   ├── build-compile-dist.sh   # Comprehensive build script
-│   └── bloat-check.sh          # Dependency analysis
-├── 📁 tests/                   # Test files
-├── 📁 docs/                    # Documentation
-├── 📁 build-resources/         # Build assets
-└── 📄 package.json             # Project configuration
-```
-
-## 🏗️ Build System
-
-### Multi-Platform Support
-
-The comprehensive build system supports:
-
-#### **macOS**
-- **DMG**: Disk image for easy distribution
-- **ZIP**: Compressed archive
-- **PKG**: macOS installer package
-- **Architectures**: Intel (x64), Apple Silicon (arm64)
-
-#### **Windows**
-- **NSIS**: Installer with custom options
-- **MSI**: Windows Installer package
-- **Portable**: Standalone executable
-- **ZIP**: Compressed archive
-- **Architectures**: x64, 32-bit (ia32)
-
-#### **Linux**
-- **AppImage**: Universal Linux package
-- **DEB**: Debian/Ubuntu package
-- **RPM**: Red Hat/Fedora package
-- **SNAP**: Universal Linux package
-- **TAR.GZ**: Compressed source archive
-- **PACMAN**: Arch Linux package
-- **Architectures**: x64, arm64, ia32, armv7l
-
-### Build Commands
+### Building
 
 ```bash
 # Build for current platform
@@ -176,21 +81,45 @@ npm run build
 # Build for all platforms
 npm run build:all
 
-# Comprehensive build (all platforms + architectures)
+# Build with maximum optimization
 npm run build:maximum
 
-# Build specific platforms
-npm run build:mac
-npm run build:win
-npm run build:linux
+# Validate build artifacts
+npm run validate:build
+```
 
-# Clean build without cleanup
-npm run build:clean
+## 📁 Project Structure
+
+```
+electron-calc/
+├── src/
+│   ├── main/           # Main Electron process
+│   │   ├── index.js
+│   │   ├── services/
+│   │   ├── utils/
+│   │   └── windows/
+│   ├── preload/        # Preload scripts
+│   │   └── index.js
+│   ├── renderer/       # Renderer process (UI)
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── assets/
+│   │   ├── styles/
+│   │   ├── utils/
+│   │   └── index.html
+│   └── shared/         # Shared utilities
+│       ├── constants/
+│       ├── utils/
+│       └── types/
+├── scripts/           # Build and utility scripts
+├── config/            # Configuration files
+├── tests/             # Test files
+├── docs/              # Documentation
+├── build-resources/    # Build assets and icons
+└── dist/              # Build output (generated)
 ```
 
 ## 🧪 Testing
-
-### Running Tests
 
 ```bash
 # Run all tests
@@ -199,105 +128,69 @@ npm test
 # Run tests in watch mode
 npm run test:watch
 
-# Generate coverage report
+# Run tests with coverage report
 npm run test:coverage
 ```
 
-### Test Structure
+## 📦 Build Configuration
 
-- **Unit Tests**: Calculator logic and mathematical operations
-- **Integration Tests**: Electron functionality and IPC communication
-- **UI Tests**: User interface interactions and keyboard navigation
+The application uses [electron-builder](https://electron.build/) for packaging. Build configuration is in:
 
-## 📊 Performance
+- `package.json` - Primary build configuration
+- `config/build.json` - Detailed build settings
 
-### Optimization Features
+### Build Targets
 
-- **Bundle Size**: Optimized for minimal footprint (~50MB)
-- **Startup Time**: Fast application launch
-- **Memory Usage**: Efficient memory management
-- **CPU Usage**: Optimized calculation engine
+- **macOS**: DMG, ZIP, PKG
+- **Windows**: NSIS installer, MSI, Portable
+- **Linux**: AppImage, DEB, RPM, SNAP, TAR.GZ
 
-### Benchmarks
+## 🔧 Scripts
 
-| Metric | Value |
-|--------|-------|
-| Startup Time | < 2 seconds |
-| Memory Usage | ~80MB |
-| Bundle Size | ~45MB (compressed) |
-| CPU Usage | < 1% (idle) |
+| Script | Description |
+|--------|-------------|
+| `npm start` | Start the application |
+| `npm run dev` | Start in development mode |
+| `npm run build` | Build for current platform |
+| `npm run build:all` | Build for all platforms |
+| `npm run build:maximum` | Build with maximum optimization |
+| `npm test` | Run tests |
+| `npm run lint` | Lint source code |
+| `npm run format` | Format source code |
+| `npm run clean` | Clean build artifacts |
+| `npm run validate:build` | Validate build artifacts |
 
-## 🔒 Security
+## 🎨 Design
 
-This application follows Electron security best practices:
+### UI Components
 
-- ✅ **Context Isolation**: Enabled by default
-- ✅ **Node Integration**: Disabled in renderer process
-- ✅ **Preload Scripts**: Secure IPC bridge
-- ✅ **Content Security Policy**: Strict CSP headers
-- ✅ **Input Validation**: Sanitized user inputs
-- ✅ **No Eval**: No dynamic code execution
+- **Display**: Large, clear number display
+- **Buttons**: Responsive button grid with hover effects
+- **Theme**: Dark mode with high contrast
+- **Layout**: Standard calculator layout
+
+### Keyboard Shortcuts
+
+- `0-9`: Number input
+- `+`, `-`, `*`, `/`: Basic operations
+- `Enter` or `=`: Calculate result
+- `Escape`: Clear all
+- `Backspace`: Clear last entry
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Run tests: `npm test`
-5. Commit changes: `git commit -m 'Add amazing feature'`
-6. Push to branch: `git push origin feature/amazing-feature`
-7. Open a Pull Request
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
-### Code Style
+### Development Guidelines
 
-- Use **ES6+** JavaScript features
-- Follow **JSDoc** comment style
-- Maintain **clean, readable code**
-- Write **tests for new features**
-- Update **documentation** as needed
-
-## 📝 Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for a complete history of changes.
-
-### Recent Updates
-
-#### v1.0.0
-- 🎉 Initial release
-- ✨ Dark mode interface
-- 🚀 Cross-platform support
-- 🔧 Comprehensive build system
-- 📚 Complete documentation
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### **Application won't start**
-- **Windows**: Run as administrator or check antivirus
-- **macOS**: Allow app in Security & Privacy settings
-- **Linux**: Check dependencies and permissions
-
-#### **Build failures**
-- Clear node_modules: `rm -rf node_modules && npm install`
-- Check Node.js version: `node --version` (requires 16.0+)
-- Check disk space: Minimum 1GB free for builds
-
-#### **Performance issues**
-- Restart application
-- Check system resources
-- Update to latest version
-
-### Getting Help
-
-- 📖 [Documentation](docs/)
-- 🐛 [Issue Tracker](https://github.com/superclaude/electron-calculator/issues)
-- 💬 [Discussions](https://github.com/superclaude/electron-calculator/discussions)
-- 📧 [Email Support](mailto:support@superclaude.ai)
+- Follow the existing code style
+- Write tests for new features
+- Update documentation as needed
+- Keep the UI clean and consistent
 
 ## 📄 License
 
@@ -305,20 +198,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Electron Team** - For the amazing cross-platform framework
-- **electron-builder** - For comprehensive build tools
-- **Community Contributors** - For feedback and improvements
+- [Electron](https://electronjs.org/) - Cross-platform desktop framework
+- [electron-builder](https://electron.build/) - Build and packaging tool
+- [Jest](https://jestjs.io/) - Testing framework
 
-## 🌟 Star History
+## 📞 Support
 
-[![Star History Chart](https://api.star-history.com/svg?repos=superclaude/electron-calculator&type=Date)](https://star-history.com/#superclaude/electron-calculator&Date)
+- 📧 Email: support@superclaude.ai
+- 🐛 Issues: [GitHub Issues](https://github.com/superclaude/electron-calculator/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/superclaude/electron-calculator/discussions)
 
 ---
 
-<div align="center">
-
 **Made with ❤️ by [SuperClaude](https://superclaude.ai)**
-
-[🌐 Website](https://superclaude.ai) • [📧 Email](mailto:support@superclaude.ai) • [🐦 Twitter](https://twitter.com/superclaude)
-
-</div>

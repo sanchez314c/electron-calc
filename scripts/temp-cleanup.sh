@@ -1,322 +1,194 @@
 #!/bin/bash
-# Temporary File Cleanup Script
-# Cleans up temporary files and build artifacts
 
-set -e
+# 🧹 SYSTEM TEMP CLEANUP FOR ELECTRON BUILDS
+# Cleans up build artifacts that accumulate in system temp directories
 
-# Color coding
+# Color codes for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
-WHITE='\033[1;37m'
-NC='\033[0m'
+NC='\033[0m' # No Color
 
-print_header() {
-    echo -e "${BLUE}╔══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${BLUE}║                    TEMPORARY FILE CLEANUP                       ${NC}"
-    echo -e "${BLUE}╚══════════════════════════════════════════════════════════════╝${NC}"
-}
-
-print_section() {
-    echo -e "\n${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${WHITE}$1${NC}"
-    echo -e "${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+print_status() {
+    echo -e "${BLUE}[$(date +'%H:%M:%S')]${NC} $1"
 }
 
 print_success() {
-    echo -e "${GREEN}✅ $1${NC}"
+    echo -e "${GREEN}[$(date +'%H:%M:%S')] ✔${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}"
-}
-
-print_error() {
-    echo -e "${RED}❌ $1${NC}"
+    echo -e "${YELLOW}[$(date +'%H:%M:%S')] ⚠${NC} $1"
 }
 
 print_info() {
-    echo -e "${CYAN}ℹ️  $1${NC}"
+    echo -e "${CYAN}[$(date +'%H:%M:%S')] ℹ${NC} $1"
 }
 
-# Cleanup functions
-cleanup_temp_files() {
-    print_section "TEMPORARY FILE CLEANUP"
+print_status "🧹 Starting comprehensive temp cleanup..."
 
-    local removed_files=0
-    local removed_size=0
+# Function to get directory size safely
+get_dir_size() {
+    if [ -d "$1" ]; then
+        du -sh "$1" 2>/dev/null | cut -f1 || echo "Unknown"
+    else
+        echo "N/A"
+    fi
+}
 
-    # Remove common temporary files
-    for pattern in "*.tmp" "*.temp" "*.bak" "*.backup" "*.log" "*.pid" "*.seed" "*.lock-wscript"; do
-        local files_found=$(find . -name "$pattern" -type f 2>/dev/null | wc -l)
-        if [ "$files_found" -gt 0 ]; then
-            local size=$(find . -name "$pattern" -type f -exec du -ch {} + 2>/dev/null | tail -1 | cut -f1)
-            print_info "Removing $files_found $pattern files ($size)"
-            find . -name "$pattern" -type f -delete 2>/dev/null
-            removed_files=$((removed_files + files_found))
-            if [ "$size" != "0" ]; then
-                removed_size="$size"
+# macOS cleanup
+if [ "$(uname)" = "Darwin" ]; then
+    print_status "🍎 macOS temp cleanup..."
+
+    # Find the user's temp directory
+    TEMP_BASE=$(find /private/var/folders -name "T" -type d 2>/dev/null | head -1)
+    if [ -n "$TEMP_BASE" ]; then
+        PARENT_DIR=$(dirname "$TEMP_BASE")
+        BEFORE_SIZE=$(get_dir_size "$PARENT_DIR")
+        print_info "Temp directory: $PARENT_DIR ($BEFORE_SIZE)"
+
+        # Count files before cleanup
+        BUILD_DIRS=$(find "$PARENT_DIR" -name "t-*" -type d 2>/dev/null | wc -l)
+        ELECTRON_DIRS=$(find "$PARENT_DIR" -name "electron-*" -type d 2>/dev/null | wc -l)
+
+        print_info "Found $BUILD_DIRS build directories, $ELECTRON_DIRS electron directories"
+
+        # Clean up build artifacts (older than 1 day)
+        print_status "Removing old build artifacts..."
+        find "$PARENT_DIR" -name "t-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+        find "$PARENT_DIR" -name "CFNetworkDownload_*.tmp" -mtime +1 -delete 2>/dev/null || true
+        find "$PARENT_DIR" -name "electron-download-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+        find "$PARENT_DIR" -name "package-dir-staging-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+        find "$PARENT_DIR" -name "com.anthropic.claudefordesktop.ShipIt.*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+        find "$PARENT_DIR" -name "com.docker.install" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+
+        AFTER_SIZE=$(get_dir_size "$PARENT_DIR")
+        print_success "macOS cleanup complete: $BEFORE_SIZE → $AFTER_SIZE"
+    else
+        print_warning "Could not locate macOS temp directory"
+    fi
+
+    # Clean up additional macOS locations
+    print_status "Cleaning additional macOS locations..."
+
+    # Clean user's Downloads for old build artifacts
+    if [ -d "$HOME/Downloads" ]; then
+        OLD_BUILDS=$(find "$HOME/Downloads" -name "*.dmg" -mtime +7 2>/dev/null | wc -l)
+        if [ $OLD_BUILDS -gt 0 ]; then
+            print_info "Found $OLD_BUILDS old .dmg files in Downloads"
+        fi
+    fi
+
+    # Clean npm cache
+    if command -v npm >/dev/null 2>&1; then
+        CACHE_SIZE=$(npm cache verify 2>/dev/null | grep "Cache verified" | awk '{print $4}' || echo "0")
+        if [ "$CACHE_SIZE" != "0" ]; then
+            print_info "npm cache: $CACHE_SIZE files"
+        fi
+    fi
+fi
+
+# Linux cleanup
+if [ "$(uname)" = "Linux" ]; then
+    print_status "🐧 Linux temp cleanup..."
+
+    if [ -d "/tmp" ]; then
+        BEFORE_SIZE=$(get_dir_size "/tmp")
+        print_info "System temp: /tmp ($BEFORE_SIZE)"
+
+        # Clean up build artifacts
+        print_status "Removing old build artifacts..."
+        find /tmp -name "electron-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+        find /tmp -name "npm-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+        find /tmp -name "tmp-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+        find /tmp -name "appimage-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+
+        AFTER_SIZE=$(get_dir_size "/tmp")
+        print_success "Linux cleanup complete: $BEFORE_SIZE → $AFTER_SIZE"
+    fi
+
+    # Clean user temp directories
+    for temp_dir in "$HOME/.cache" "$HOME/.tmp"; do
+        if [ -d "$temp_dir" ]; then
+            TEMP_SIZE=$(get_dir_size "$temp_dir")
+            if [ "$TEMP_SIZE" != "N/A" ]; then
+                print_info "User temp: $temp_dir ($TEMP_SIZE)"
             fi
         fi
     done
+fi
 
-    # Remove OS-specific temp files
-    for pattern in ".DS_Store" "Thumbs.db" "Desktop.ini" "ehthumbs.db"; do
-        local files_found=$(find . -name "$pattern" -type f 2>/dev/null | wc -l)
-        if [ "$files_found" -gt 0 ]; then
-            print_info "Removing $files_found OS temp files"
-            find . -name "$pattern" -type f -delete 2>/dev/null
-            removed_files=$((removed_files + files_found))
+# Windows cleanup (if running in WSL or Git Bash)
+if [[ "$(uname)" == *"MINGW"* ]] || [[ "$(uname)" == *"CYGWIN"* ]] || [ -n "$WSL_DISTRO_NAME" ]; then
+    print_status "🪟 Windows temp cleanup..."
+
+    # Try to access Windows temp directories
+    for temp_path in "/c/Users/*/AppData/Local/Temp" "/mnt/c/Users/*/AppData/Local/Temp" "$USERPROFILE/AppData/Local/Temp"; do
+        if [ -d "$temp_path" ]; then
+            BEFORE_SIZE=$(get_dir_size "$temp_path")
+            print_info "Windows temp: $temp_path ($BEFORE_SIZE)"
+
+            # Clean electron build artifacts
+            find "$temp_path" -name "electron-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+            find "$temp_path" -name "npm-*" -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+            break
         fi
     done
+fi
 
-    # Clean editor backup files
-    for pattern in "*~" "*.swp" "*.swo" "*.suc"; do
-        local files_found=$(find . -name "$pattern" -type f 2>/dev/null | wc -l)
-        if [ "$files_found" -gt 0 ]; then
-            print_info "Removing $files_found editor backup files"
-            find . -name "$pattern" -type f -delete 2>/dev/null
-            removed_files=$((removed_files + files_found))
-        fi
-    done
+# Clean project-specific temp directories
+print_status "🗂️  Cleaning project temp directories..."
 
-    if [ "$removed_files" -gt 0 ]; then
-        print_success "Removed $removed_files temporary files"
-        if [ "$removed_size" != "0" ]; then
-            print_success "Freed up $removed_size of disk space"
-        fi
-    else
-        print_success "No temporary files found to remove"
-    fi
-}
+# Clean common project temp locations
+for temp_dir in ".tmp" "tmp" "temp" "build-temp" ".cache"; do
+    if [ -d "$temp_dir" ]; then
+        TEMP_SIZE=$(get_dir_size "$temp_dir")
+        print_info "Project temp: $temp_dir ($TEMP_SIZE)"
 
-cleanup_build_artifacts() {
-    print_section "BUILD ARTIFACT CLEANUP"
-
-    local cleaned_dirs=0
-
-    # Remove build directories
-    for dir in "dist" "build" "out" "release" "temp" "tmp"; do
-        if [ -d "$dir" ]; then
-            local size=$(du -sh "$dir" 2>/dev/null | cut -f1)
-            print_info "Removing $dir directory ($size)"
-            rm -rf "$dir"
-            cleaned_dirs=$((cleaned_dirs + 1))
-        fi
-    done
-
-    # Remove npm cache files
-    if [ -d ".npm" ]; then
-        print_info "Removing .npm cache directory"
-        rm -rf ".npm"
-        cleaned_dirs=$((cleaned_dirs + 1))
-    fi
-
-    # Remove test coverage
-    if [ -d "coverage" ]; then
-        print_info "Removing test coverage directory"
-        rm -rf "coverage"
-        cleaned_dirs=$((cleaned_dirs + 1))
-    fi
-
-    if [ "$cleaned_dirs" -gt 0 ]; then
-        print_success "Cleaned $cleaned_dirs build directories"
-    else
-        print_success "No build artifacts found to clean"
-    fi
-}
-
-cleanup_node_modules() {
-    print_section "NODE MODULES OPTIMIZATION"
-
-    if [ ! -d "node_modules" ]; then
-        print_info "node_modules directory not found"
-        return
-    fi
-
-    # Calculate current size
-    local current_size=$(du -sh node_modules 2>/dev/null | cut -f1)
-    print_info "Current node_modules size: $current_size"
-
-    # Remove unnecessary files
-    local cleaned_files=0
-
-    # Remove test files from production packages
-    find node_modules -name "test" -type d -exec rm -rf {} + 2>/dev/null || true
-    find node_modules -name "tests" -type d -exec rm -rf {} + 2>/dev/null || true
-
-    # Remove documentation files
-    find node_modules -name "*.md" -type f -delete 2>/dev/null || true
-
-    # Remove example files
-    find node_modules -name "example*" -type f -delete 2>/dev/null || true
-    find node_modules -name "examples" -type d -exec rm -rf {} + 2>/dev/null || true
-
-    # Remove .git directories
-    find node_modules -name ".git" -type d -exec rm -rf {} + 2>/dev/null || true
-
-    # Remove TypeScript source files (keeping JS)
-    find node_modules -name "*.ts" -type f ! -name "*.d.ts" -delete 2>/dev/null || true
-
-    # Calculate new size
-    local new_size=$(du -sh node_modules 2>/dev/null | cut -f1)
-    print_info "Optimized node_modules size: $new_size"
-
-    print_success "node_modules optimization complete"
-}
-
-cleanup_logs() {
-    print_section "LOG CLEANUP"
-
-    local removed_logs=0
-
-    # Remove large log files
-    find . -name "*.log" -type f -size +10M -delete 2>/dev/null || true
-    removed_logs=$((removed_logs + $(find . -name "*.log" -type f -size +10M 2>/dev/null | wc -l)))
-
-    # Clear npm debug logs
-    if command -v npm &> /dev/null; then
-        npm cache clean --force 2>/dev/null || true
-        print_success "npm cache cleaned"
-    fi
-
-    # Remove debug logs
-    find . -name "debug.log" -type f -delete 2>/dev/null || true
-    find . -name "npm-debug.log*" -type f -delete 2>/dev/null || true
-    find . -name "yarn-debug.log*" -type f -delete 2>/dev/null || true
-
-    if [ "$removed_logs" -gt 0 ]; then
-        print_success "Removed $removed_logs log files"
-    else
-        print_success "No large log files found"
-    fi
-}
-
-optimize_git() {
-    print_section "GIT OPTIMIZATION"
-
-    if [ ! -d ".git" ]; then
-        print_info "Not a git repository"
-        return
-    fi
-
-    # Clean up unreachable objects
-    print_info "Cleaning up git objects..."
-    git gc --aggressive --prune=now 2>/dev/null || true
-
-    # Remove stale refs
-    git remote prune origin 2>/dev/null || true
-
-    print_success "Git optimization complete"
-}
-
-generate_cleanup_report() {
-    print_section "CLEANUP REPORT"
-
-    local total_size=0
-    local temp_size=0
-    local nm_size=0
-
-    # Calculate total project size
-    if [ -d "." ]; then
-        total_size=$(du -sh . 2>/dev/null | cut -f1)
-    fi
-
-    # Calculate temporary files size
-    temp_size=$(find . -name "*.tmp" -o -name "*.temp" -o -name "*.bak" -o -name "*.log" 2>/dev/null | xargs du -ch 2>/dev/null | tail -1 | cut -f1 2>/dev/null || echo "0B")
-
-    # Calculate node_modules size
-    if [ -d "node_modules" ]; then
-        nm_size=$(du -sh node_modules 2>/dev/null | cut -f1)
-    fi
-
-    echo -e "${WHITE}Cleanup Summary:${NC}"
-    echo -e "  Total project size: $total_size"
-    echo -e "  node_modules size: $nm_size"
-    echo -e "  Temporary files: $temp_size"
-    echo -e ""
-    echo -e "${WHITE}Recommendations:${NC}"
-
-    if [[ "$temp_size" != "0B" ]]; then
-        echo -e "  ${YELLOW}⚠️  Temporary files still present - consider running cleanup again${NC}"
-    else
-        echo -e "  ${GREEN}✅ No temporary files detected${NC}"
-    fi
-
-    if command -v python3 &> /dev/null; then
-        python3 -c "
-import os
-import subprocess
-
-def get_dir_size(path):
-    try:
-        result = subprocess.run(['du', '-sb', path], capture_output=True, text=True)
-        return int(result.stdout.split()[0]) if result.returncode == 0 else 0
-    except:
-        return 0
-
-total_bytes = get_dir_size('.')
-nm_bytes = get_dir_size('node_modules') if os.path.exists('node_modules') else 0
-
-print('  Project size analysis:')
-if total_bytes > 500 * 1024 * 1024:  # > 500MB
-    print('    ⚠️  Large project size (>500MB) - consider archiving old builds')
-elif total_bytes > 200 * 1024 * 1024:  # > 200MB
-    print('    ℹ️  Moderate project size (>200MB)')
-else:
-    print('    ✅ Acceptable project size')
-
-if nm_bytes > 200 * 1024 * 1024:  # > 200MB
-    print('    ⚠️  Large node_modules - consider npm-check-updates for optimization')
-"
-    fi
-
-    print_success "Cleanup process completed successfully"
-}
-
-main() {
-    print_header
-
-    # Parse command line arguments
-    local aggressive=false
-    local skip_node_modules=false
-
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --aggressive) aggressive=true ;;
-            --skip-node-modules) skip_node_modules=true ;;
-            --help)
-                echo "Usage: $0 [OPTIONS]"
-                echo "Options:"
-                echo "  --aggressive        More aggressive cleanup (removes more files)"
-                echo "  --skip-node-modules Skip node_modules optimization"
-                echo "  --help              Show this help message"
-                exit 0
-                ;;
-        esac
-        shift
-    done
-
-    # Execute cleanup phases
-    cleanup_temp_files
-    cleanup_build_artifacts
-    cleanup_logs
-
-    if [ "$skip_node_modules" = false ]; then
-        if [ "$aggressive" = true ]; then
-            cleanup_node_modules
-        else
-            print_info "Skipping node_modules optimization (use --aggressive to enable)"
+        # Only clean if it's clearly a temp directory
+        if [[ "$temp_dir" == *"tmp"* ]] || [[ "$temp_dir" == *"temp"* ]] || [[ "$temp_dir" == *"cache"* ]]; then
+            rm -rf "$temp_dir" 2>/dev/null || true
+            print_success "Cleaned $temp_dir"
         fi
     fi
+done
 
-    optimize_git
-    generate_cleanup_report
+# Clean node_modules cache
+if [ -d "node_modules/.cache" ]; then
+    CACHE_SIZE=$(get_dir_size "node_modules/.cache")
+    print_info "Node modules cache: $CACHE_SIZE"
+    rm -rf node_modules/.cache 2>/dev/null || true
+    print_success "Cleaned node_modules cache"
+fi
 
-    print_success "All cleanup operations completed"
-}
+# Clean electron cache
+if [ -d "$HOME/.cache/electron" ]; then
+    ELECTRON_CACHE_SIZE=$(get_dir_size "$HOME/.cache/electron")
+    print_info "Electron cache: $ELECTRON_CACHE_SIZE"
+fi
 
-main "$@"
+# Summary and recommendations
+print_status "📊 Cleanup summary and recommendations:"
+
+print_info "Regular maintenance tasks:"
+print_info "  • Run temp cleanup weekly"
+print_info "  • Monitor temp directory sizes"
+print_info "  • Set up automated cleanup scripts"
+print_info "  • Use custom temp directories for builds"
+
+print_info "Prevention strategies:"
+print_info "  • Configure electron-builder to use custom temp paths"
+print_info "  • Add cleanup steps to build scripts"
+print_info "  • Use Docker for isolated builds"
+print_info "  • Monitor disk usage regularly"
+
+print_success "🎉 Temp cleanup complete!"
+
+# Optional: Create a cleanup cron job suggestion
+if command -v crontab >/dev/null 2>&1; then
+    print_info "💡 To automate this cleanup, add to crontab:"
+    print_info "    0 2 * * 0 $(pwd)/scripts/temp-cleanup.sh"
+    print_info "    (Runs every Sunday at 2 AM)"
+fi
