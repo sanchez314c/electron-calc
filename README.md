@@ -38,32 +38,33 @@ git clone https://github.com/superclaude/electron-calculator.git
 cd electron-calculator
 
 # Build and run with a single command!
-npm run build && npm start
+./build-release-run.sh
 ```
 
 ### Option 2: Development Mode
 
 ```bash
 # Run in development mode with hot reload
-npm run dev
+./build-release-run.sh --dev
 ```
 
 ### Build Options
 
 ```bash
-# Build for current platform
-npm run build
-
-# Build for all platforms
-npm run build:all
-
-# Build with maximum optimization
-npm run build:maximum
+# Build only (don't launch)
+./build-release-run.sh --build-only
 
 # Clean build
-npm run clean
-```
+./build-release-run.sh --clean
 
+# Build for specific platform
+./build-release-run.sh --platform mac
+./build-release-run.sh --platform win
+./build-release-run.sh --platform linux
+
+# Build for all platforms
+./build-release-run.sh --platform all
+```
 
 ## 📋 Prerequisites
 
@@ -82,27 +83,29 @@ The application includes all necessary dependencies.
 git clone https://github.com/superclaude/electron-calculator.git
 cd electron-calculator
 
-# Install dependencies
+# Option 1: Use the install script (if needed)
+cd dev && ./install.sh && cd ..
+
+# Option 2: Manual installation
 npm install
 
 # Start the application
-npm start
+./build-release-run.sh
 ```
 
 ### Building from Source
 
 ```bash
-# Build for current platform
-npm run build
+# One-command build for current platform
+./build-release-run.sh --build-only
 
 # Build for all platforms
-npm run build:all
+./build-release-run.sh --platform all --build-only
 
-# Build with maximum optimization
-npm run build:maximum
-
-# Validate build artifacts
-npm run validate:build
+# Build for specific platforms
+./build-release-run.sh --platform win --build-only
+./build-release-run.sh --platform mac --build-only
+./build-release-run.sh --platform linux --build-only
 ```
 
 ### Build Output Locations
@@ -112,101 +115,12 @@ After building, find your executables in:
 - **Windows**: `dist/Calculator Setup *.exe`
 - **Linux**: `dist/Calculator-*.AppImage` and `dist/*.deb`
 
-## 📁 Project Structure
-
-```
-electron-calc/
-├── src/
-│   ├── main/           # Main Electron process
-│   │   ├── index.js
-│   │   ├── services/
-│   │   ├── utils/
-│   │   └── windows/
-│   ├── preload/        # Preload scripts
-│   │   └── index.js
-│   ├── renderer/       # Renderer process (UI)
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── assets/
-│   │   ├── styles/
-│   │   ├── utils/
-│   │   └── index.html
-│   └── shared/         # Shared utilities
-│       ├── constants/
-│       ├── utils/
-│       └── types/
-├── scripts/           # Build and utility scripts
-├── config/            # Configuration files
-├── tests/             # Test files
-├── docs/              # Documentation
-├── build-resources/    # Build assets and icons
-└── dist/              # Build output (generated)
-```
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage report
-npm run test:coverage
-```
-
-## 📦 Build Configuration
-
-The application uses [electron-builder](https://electron.build/) for packaging. Build configuration is in:
-
-- `package.json` - Primary build configuration
-- `config/build.json` - Detailed build settings
-
-### Build Targets
-
-- **macOS**: DMG, ZIP, PKG
-- **Windows**: NSIS installer, MSI, Portable
-- **Linux**: AppImage, DEB, RPM, SNAP, TAR.GZ
-
-## 🔧 Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm start` | Start the application |
-| `npm run dev` | Start in development mode |
-| `npm run build` | Build for current platform |
-| `npm run build:all` | Build for all platforms |
-| `npm run build:maximum` | Build with maximum optimization |
-| `npm test` | Run tests |
-| `npm run lint` | Lint source code |
-| `npm run format` | Format source code |
-| `npm run clean` | Clean build artifacts |
-| `npm run validate:build` | Validate build artifacts |
-
-## 🎨 Design
-
-### UI Components
-
-- **Display**: Large, clear number display
-- **Buttons**: Responsive button grid with hover effects
-- **Theme**: Dark mode with high contrast
-- **Layout**: Standard calculator layout
-
-### Keyboard Shortcuts
-
-- `0-9`: Number input
-- `+`, `-`, `*`, `/`: Basic operations
-- `Enter` or `=`: Calculate result
-- `Escape`: Clear all
-- `Backspace`: Clear last entry
-
 ## 📖 Usage
 
 ### 1. Starting the Application
 
 - **Pre-built Binary**: Just double-click the application
-- **From Source**: Run `npm start`
+- **From Source**: Run `./build-release-run.sh`
 
 ### 2. Basic Calculations
 
@@ -291,19 +205,49 @@ export ELECTRON_CALC_DEBUG=1
 electron-calc/
 ├── package.json          # Node.js configuration and dependencies
 ├── package-lock.json     # Dependency lock file
+├── tsconfig.json         # TypeScript configuration
+├── .eslintrc.json        # ESLint configuration
 ├── src/                  # Source code
-│   ├── main.js          # Electron main process
-│   ├── preload.js       # Preload script
-│   ├── index.html       # Application UI
-│   ├── style.css        # Dark theme styles
-│   └── renderer.js      # UI logic and interactions
+│   ├── main/            # Electron main process
+│   │   ├── index.js
+│   │   ├── services/
+│   │   ├── utils/
+│   │   └── windows/
+│   ├── preload/         # Preload scripts
+│   │   └── index.js
+│   ├── renderer/        # Renderer process (UI)
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── assets/
+│   │   ├── styles/
+│   │   ├── utils/
+│   │   └── index.html
+│   └── shared/          # Shared utilities
+│       ├── constants/
+│       ├── utils/
+│       └── types/
 ├── build_resources/      # Build resources and assets
-│   ├── icons/          # Platform-specific icons
-│   └── screenshots/    # Application screenshots
+│   ├── icons/           # Platform-specific icons
+│   └── screenshots/     # Application screenshots
 ├── scripts/             # Utility scripts
+│   ├── build-compile-dist.sh # Universal build script
 ├── tests/               # Test files
+├── docs/                # Documentation
 ├── archive/             # Archived/backup files
 └── dist/                # Build outputs (generated)
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
 ```
 
 ## 🤝 Contributing
@@ -321,7 +265,7 @@ cd electron-calculator
 npm install
 
 # Run in development mode
-npm run dev
+./build-release-run.sh --dev
 
 # Run tests
 npm test
