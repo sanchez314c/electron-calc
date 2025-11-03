@@ -75,7 +75,7 @@
     ],
     "mac": {
       "category": "public.app-category.utilities",
-      "icon": "build_resources/Icons/icon.icns",
+      "icon": "build_resources/icons/icon.icns",
       "target": [
         {
           "target": "dmg",
@@ -136,12 +136,12 @@
           ]
         }
       ],
-      "icon": "build_resources/Icons/icon.png"
+      "icon": "build_resources/icons/icon.png"
     },
     "linux": {
       "category": "Utility",
       "maintainer": "SuperClaude <support@superclaude.ai>",
-      "icon": "build_resources/Icons/icon.png",
+      "icon": "build_resources/icons/icon.png",
       "target": [
         {
           "target": "AppImage",
@@ -205,9 +205,9 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "allowElevation": true,
-      "installerIcon": "build_resources/Icons/icon.png",
-      "uninstallerIcon": "build_resources/Icons/icon.png",
-      "installerHeaderIcon": "build_resources/Icons/icon.png",
+      "installerIcon": "build_resources/icons/icon.png",
+      "uninstallerIcon": "build_resources/icons/icon.png",
+      "installerHeaderIcon": "build_resources/icons/icon.png",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Calculator"
